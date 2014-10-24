@@ -115,6 +115,25 @@ describe('util', function() {
             });
         });
     });
+
+    describe('restoreLocal', function() {
+        it('should move the files', function(done) {
+
+            util.restoreLocal(['dotfilertestfile1', 'dotfilertestfile2', 'dotfilertestfile3'], function(err) {
+                if (err) done(err);
+                else {
+                    var opts = {
+                        encoding: 'utf8'
+                    };
+
+                    fs.readFileSync(path.join(userHome(), 'dotfilertestfile1'), opts).should.equal('1');
+                    fs.readFileSync(path.join(userHome(), 'dotfilertestfile2'), opts).should.equal('2');
+                    fs.readFileSync(path.join(userHome(), 'dotfilertestfile3'), opts).should.equal('3');
+                    done();
+                }
+            });
+        });
+    });
 });
 
 after(function() {
