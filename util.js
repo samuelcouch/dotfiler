@@ -1,6 +1,7 @@
 var fs = require('fs'),
     path = require('path'),
-    async = require('async');
+    async = require('async'),
+    rimraf = require('rimraf');
 
 var WORKSPACE_NAME = '.dotfiler',
     TEMP_FOLDER = 'tmp',
@@ -41,7 +42,7 @@ function setupTemp(cb) {
         if (err) cb(err);
         else {
             var tmpPath = path.join(userHome(), WORKSPACE_NAME, TEMP_FOLDER);
-            if (fs.existsSync(tmpPath)) fs.rmdirSync(tmpPath);
+            if (fs.existsSync(tmpPath)) rimraf.sync(tmpPath);
             fs.mkdir(tmpPath, function(err) {
                 if (err) cb(err);
                 else {
@@ -74,7 +75,7 @@ function _moveFile(filename) {
             if (err) cb(err);
             else fs.writeFile(to, data, function(err) {
                 if (err) cb(err);
-                else fs.unlink(to, cb)
+                else fs.unlink(from, cb)
             });
         });
     };
@@ -90,15 +91,11 @@ function backupLocal(files, cb) {
         if (err) cb(err);
         else {
             var localPath = path.join(userHome(), WORKSPACE_NAME, LOCAL_FOLDER);
-            fs.mkdir(localPath, function(err) {
+            if (!fs.existsSync(localPath)) fs.mkdirSync(localPath);
+            async.parallel(funcs, function(err) {
                 if (err) cb(err);
                 else {
-                    async.parallel(funcs, function(err) {
-                        if (err) cb(err);
-                        else {
-                            cb();
-                        }
-                    });
+                    cb();
                 }
             });
         }

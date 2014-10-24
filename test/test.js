@@ -1,6 +1,7 @@
 var should = require('should'),
     fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    rimraf = require('rimraf');
 
 var util = require('../util.js');
 
@@ -24,7 +25,7 @@ describe('command', function() {
 describe('util', function() {
     describe('setupTemp', function() {
         it('should create the workspace directory', function(done) {
-            fs.rmdir(path.join(userHome(), WORKSPACE_NAME), function() {
+            rimraf(path.join(userHome(), WORKSPACE_NAME), function() {
                 util.setupTemp(function(err) {
                     if (err) done(err);
                     else {
@@ -38,7 +39,7 @@ describe('util', function() {
         });
 
         it('should create the temp directory', function(done) {
-            fs.rmdir(path.join(userHome(), WORKSPACE_NAME), function() {
+            rimraf(path.join(userHome(), WORKSPACE_NAME), function() {
                 util.setupTemp(function(err) {
                     if (err) done(err);
                     else {
@@ -60,7 +61,7 @@ describe('util', function() {
         };
 
         it('should create the workspace directory', function(done) {
-            fs.rmdir(path.join(userHome(), WORKSPACE_NAME), function() {
+            rimraf(path.join(userHome(), WORKSPACE_NAME), function() {
                 util.writeConfig(config, function(err) {
                     if (err) done(err);
                     else {
@@ -74,7 +75,7 @@ describe('util', function() {
         });
 
         it('should write the config file', function(done) {
-            fs.rmdir(path.join(userHome(), WORKSPACE_NAME), function() {
+            rimraf(path.join(userHome(), WORKSPACE_NAME), function() {
                 util.writeConfig(config, function(err) {
                     if (err) done(err);
                     else {
@@ -92,4 +93,30 @@ describe('util', function() {
             });
         });
     });
+
+    describe('backupLocal', function() {
+        it('should move the files', function(done) {
+            fs.writeFileSync(path.join(userHome(), 'dotfilertestfile1'), '1');
+            fs.writeFileSync(path.join(userHome(), 'dotfilertestfile2'), '2');
+            fs.writeFileSync(path.join(userHome(), 'dotfilertestfile3'), '3');
+
+            util.backupLocal(['dotfilertestfile1', 'dotfilertestfile2', 'dotfilertestfile3'], function(err) {
+                if (err) done(err);
+                else {
+                    var opts = {
+                        encoding: 'utf8'
+                    };
+
+                    fs.readFileSync(path.join(userHome(), WORKSPACE_NAME, LOCAL_FOLDER, 'dotfilertestfile1'), opts).should.equal('1');
+                    fs.readFileSync(path.join(userHome(), WORKSPACE_NAME, LOCAL_FOLDER, 'dotfilertestfile2'), opts).should.equal('2');
+                    fs.readFileSync(path.join(userHome(), WORKSPACE_NAME, LOCAL_FOLDER, 'dotfilertestfile3'), opts).should.equal('3');
+                    done();
+                }
+            });
+        });
+    });
+});
+
+after(function() {
+    rimraf.sync(path.join(userHome(), WORKSPACE_NAME));
 });
