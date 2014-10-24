@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/skeswa/dotfiler",
   "dependencies": {
-    "commander": "^2.4.0"
+    "commander": "^2.4.0",
+    "unzip": "^0.1.11"
   }
 }
