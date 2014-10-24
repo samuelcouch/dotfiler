@@ -66,7 +66,7 @@ function writeConfig(config, cb) {
     });
 }
 
-function _moveFile(filename) {
+function _backupLocalFile(filename) {
     var from = path.join(userHome(), filename),
         to = path.join(userHome(), WORKSPACE_NAME, LOCAL_FOLDER, filename);
 
@@ -84,7 +84,7 @@ function _moveFile(filename) {
 function backupLocal(files, cb) {
     var funcs = [];
     for (var i = 0; i < files.length; i++) {
-        funcs.push(_moveFile(files[i]));
+        funcs.push(_backupLocalFile(files[i]));
     }
 
     assertWorkspace(function(err) {
@@ -102,8 +102,44 @@ function backupLocal(files, cb) {
     });
 }
 
+function _restoreLocalFile(filename) {
+    var to = path.join(userHome(), filename),
+        from = path.join(userHome(), WORKSPACE_NAME, LOCAL_FOLDER, filename);
+
+    return function(cb) {
+        fs.readFile(from, function(err, data) {
+            if (err) cb(err);
+            else fs.writeFile(to, data, function(err) {
+                if (err) cb(err);
+                else fs.unlink(from, cb)
+            });
+        });
+    };
+};
+
+function restoreLocal(files, cb) {
+    var funcs = [];
+    for (var i = 0; i < files.length; i++) {
+        funcs.push(_restoreLocalFile(files[i]));
+    }
+
+    assertWorkspace(function(err) {
+        if (err) cb(err);
+        else {
+            var localPath = path.join(userHome(), WORKSPACE_NAME, LOCAL_FOLDER);
+            async.parallel(funcs, function(err) {
+                if (err) cb(err);
+                else {
+                    cb();
+                }
+            });
+        }
+    });
+}
+
 module.exports = {
     setupTemp: setupTemp,
     writeConfig: writeConfig,
-    backupLocal: backupLocal
+    backupLocal: backupLocal,
+    restoreLocal: restoreLocal
 };
