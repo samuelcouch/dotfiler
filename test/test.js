@@ -147,6 +147,7 @@ describe('util', function() {
                     else {
                         should(zipPath).equal(path.join(userHome(), WORKSPACE_NAME, TEMP_FOLDER, 'skeswa_dotfiles.zip'));
                         fs.existsSync(zipPath).should.be.true;
+                        done();
                     }
                 });
             });

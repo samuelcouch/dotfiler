@@ -17,18 +17,10 @@ function getZip(username, repo, cb) {
 			workspace.setupTemp(function(err, tmpPath) {
 				if (err) cb(err);
 				else {
-					// request(zipUrl).pipe(fs.createWriteStream(path.join(tmpPath, username + '_dotfiles.zip')))
-					// 	.on('response', function(response) {
-					// 		console.log('...');
-					// 		console.log(response);
-					// 	})
-					// 	.on('close', function() {
-					// 		cb(undefined, path.join(tmpPath, username + '_dotfiles.zip'));
-					// 	});
-					request(zipUrl, function() {
-						console.log('yay, got here');
-						cb(undefined, path.join(tmpPath, username + '_dotfiles.zip'));
-					});
+					request(zipUrl).pipe(fs.createWriteStream(path.join(tmpPath, username + '_dotfiles.zip')))
+						.on('close', function() {
+							cb(undefined, path.join(tmpPath, username + '_dotfiles.zip'));
+						});
 				}
 			});
 		}
