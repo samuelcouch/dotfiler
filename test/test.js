@@ -3,7 +3,8 @@ var should = require('should'),
     path = require('path'),
     rimraf = require('rimraf');
 
-var util = require('../utils/workspace.js');
+var workspaceUtil = require('../utils/workspace.js'),
+    createUtil = require('../utils/create.js');
 
 var WORKSPACE_NAME = '.dotfiler',
     TEMP_FOLDER = 'tmp',
@@ -27,7 +28,7 @@ describe('util', function() {
         describe('setupTemp', function() {
             it('should create the workspace directory', function(done) {
                 rimraf(path.join(userHome(), WORKSPACE_NAME), function() {
-                    util.setupTemp(function(err) {
+                    workspaceUtil.setupTemp(function(err) {
                         if (err) done(err);
                         else {
                             fs.exists(path.join(userHome(), WORKSPACE_NAME), function(exists) {
@@ -41,7 +42,7 @@ describe('util', function() {
 
             it('should create the temp directory', function(done) {
                 rimraf(path.join(userHome(), WORKSPACE_NAME), function() {
-                    util.setupTemp(function(err) {
+                    workspaceUtil.setupTemp(function(err) {
                         if (err) done(err);
                         else {
                             fs.exists(path.join(userHome(), WORKSPACE_NAME, TEMP_FOLDER), function(exists) {
@@ -63,7 +64,7 @@ describe('util', function() {
 
             it('should create the workspace directory', function(done) {
                 rimraf(path.join(userHome(), WORKSPACE_NAME), function() {
-                    util.writeConfig(config, function(err) {
+                    workspaceUtil.writeConfig(config, function(err) {
                         if (err) done(err);
                         else {
                             fs.exists(path.join(userHome(), WORKSPACE_NAME), function(exists) {
@@ -77,7 +78,7 @@ describe('util', function() {
 
             it('should write the config file', function(done) {
                 rimraf(path.join(userHome(), WORKSPACE_NAME), function() {
-                    util.writeConfig(config, function(err) {
+                    workspaceUtil.writeConfig(config, function(err) {
                         if (err) done(err);
                         else {
                             fs.readFile(path.join(userHome(), WORKSPACE_NAME, CONFIG_FILE), {
@@ -101,7 +102,7 @@ describe('util', function() {
                 fs.writeFileSync(path.join(userHome(), 'dotfilertestfile2'), '2');
                 fs.writeFileSync(path.join(userHome(), 'dotfilertestfile3'), '3');
 
-                util.backupLocal(['dotfilertestfile1', 'dotfilertestfile2', 'dotfilertestfile3'], function(err) {
+                workspaceUtil.backupLocal(['dotfilertestfile1', 'dotfilertestfile2', 'dotfilertestfile3'], function(err) {
                     if (err) done(err);
                     else {
                         var opts = {
@@ -120,7 +121,7 @@ describe('util', function() {
         describe('restoreLocal', function() {
             it('should move the dotfiles', function(done) {
 
-                util.restoreLocal(['dotfilertestfile1', 'dotfilertestfile2', 'dotfilertestfile3'], function(err) {
+                workspaceUtil.restoreLocal(['dotfilertestfile1', 'dotfilertestfile2', 'dotfilertestfile3'], function(err) {
                     if (err) done(err);
                     else {
                         var opts = {
@@ -131,6 +132,21 @@ describe('util', function() {
                         fs.readFileSync(path.join(userHome(), 'dotfilertestfile2'), opts).should.equal('2');
                         fs.readFileSync(path.join(userHome(), 'dotfilertestfile3'), opts).should.equal('3');
                         done();
+                    }
+                });
+            });
+        });
+    });
+
+    describe('create', function() {
+        describe('getZip', function() {
+            it('should download repo zip', function(done) {
+                this.timeout(4000);
+                createUtil.getZip('skeswa', 'dotfiles', function(err, zipPath) {
+                    if (err) done(err);
+                    else {
+                        should(zipPath).equal(path.join(userHome(), WORKSPACE_NAME, TEMP_FOLDER, 'skeswa_dotfiles.zip'));
+                        fs.existsSync(zipPath).should.be.true;
                     }
                 });
             });
