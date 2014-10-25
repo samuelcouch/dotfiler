@@ -3,7 +3,7 @@ var should = require('should'),
     path = require('path'),
     rimraf = require('rimraf');
 
-var util = require('../util.js');
+var util = require('../utils/util.js');
 
 var WORKSPACE_NAME = '.dotfiler',
     TEMP_FOLDER = 'tmp',
