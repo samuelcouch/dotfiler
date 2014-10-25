@@ -4,11 +4,22 @@ var unzip = require('unzip');
 
 function get_dotfiles(username, repo){
 	repo = repo || "dotfiles";
-	var zip_url = 'https://github.com/'+username+'/'+repo+'/archive/master.zip';
-	request(zip_url)
-	  .pipe(fs.createWriteStream(username+'_dotfiles.zip'))
-	  .on('close', function () {
-	  		console.log('Zip acquired! Time to unpack!');
+	var repo_url = 'https://github.com/'+username+'/'+repo;
+	var zip_url = repo_url+'/archive/master.zip';
+	request(repo_url, function (err, res, body){
+		if(!err && res.statusCode != 404){
+			request(zip_url)
+				.pipe(fs.createWriteStream(username+'_dotfiles.zip'))
+				.on('close', function () {
+				  	console.log('Zip acquired, captain!');
+				});
+		}
+		else
+			console.log("Github doesn't like that...");
 	});
+
 }
 
+module.exports = {
+	get_dotfiles: get_dotfiles
+};
