@@ -29,5 +29,3 @@ function getDotfiles(username, repo){
 module.exports = {
 	getDotfiles: getDotfiles
 };
-
-getDotfiles('samuelcouch');
