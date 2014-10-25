@@ -138,4 +138,7 @@ describe('util', function() {
 
 after(function() {
     rimraf.sync(path.join(userHome(), WORKSPACE_NAME));
+    fs.unlinkSync(path.join(userHome(), 'dotfilertestfile1'));
+    fs.unlinkSync(path.join(userHome(), 'dotfilertestfile2'));
+    fs.unlinkSync(path.join(userHome(), 'dotfilertestfile3'));
 });
