@@ -4,7 +4,7 @@ var unzip = require('unzip');
 var path = require('path');
 var utils = require('./util.js');
 
-function getDotfiles(username, repo){
+function getZip(username, repo){
 	repo = repo || "dotfiles";
 	var repo_url = 'https://github.com/'+username+'/'+repo;
 	var zip_url = repo_url+'/archive/master.zip';
@@ -15,7 +15,7 @@ function getDotfiles(username, repo){
 			    	request(zip_url)
 			    	.pipe(fs.createWriteStream(path.join(tmpPath, username+'_dotfiles.zip')))
 			    	.on('close', function(){
-			    		console.log('Zip acquires, captain!');
+			    		console.log('Zip acquired, captain!');
 			    	});
 			    }
 			});
@@ -27,5 +27,5 @@ function getDotfiles(username, repo){
 }
 
 module.exports = {
-	getDotfiles: getDotfiles
+	getZip: getZip
 };
