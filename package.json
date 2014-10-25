@@ -27,5 +27,10 @@
   "dependencies": {
     "commander": "^2.4.0",
     "unzip": "^0.1.11"
+    "async": "^0.9.0",
+    "rimraf": "^2.2.8"
+  },
+  "devDependencies": {
+    "should": "^4.1.0"
   }
 }
