@@ -2,7 +2,7 @@ var fs = require('fs');
 var request = require('request');
 var unzip = require('unzip');
 var path = require('path');
-var utils = require('./util.js');
+var utils = require('./workspace.js');
 
 function getZip(username, repo){
 	repo = repo || "dotfiles";
