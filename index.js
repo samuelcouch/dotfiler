@@ -1,5 +1,5 @@
 var program = require('commander'),
-    util = require('./util.js');
+    util = require('utils/util.js');
 
 var ERR_MULTIPLE_COMMANDS = 'You can\'t use multiple commands at once. Scrub.';
 
