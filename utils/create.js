@@ -27,6 +27,21 @@ function getZip(username, repo, cb) {
 	});
 }
 
+function unpackZip(filepath, cb) {
+	var dirpath = filepath.substring(0, filepath.length - 4);
+	fs.mkdir(dirpath, function(err) {
+		if (err) cb(err);
+		else {
+			fs.createReadStream(filepath).pipe(unzip.Extract({
+				path: dirpath
+			})).on('close', function() {
+				cb();
+			});
+		}
+	});
+}
+
 module.exports = {
-	getZip: getZip
+	getZip: getZip,
+	unpackZip: unpackZip
 };

@@ -141,13 +141,29 @@ describe('util', function() {
     describe('create', function() {
         describe('getZip', function() {
             it('should download repo zip', function(done) {
-                this.timeout(4000);
+                this.timeout(1000);
                 createUtil.getZip('skeswa', 'dotfiles', function(err, zipPath) {
                     if (err) done(err);
                     else {
                         should(zipPath).equal(path.join(userHome(), WORKSPACE_NAME, TEMP_FOLDER, 'skeswa_dotfiles.zip'));
                         fs.existsSync(zipPath).should.be.true;
                         done();
+                    }
+                });
+            });
+        });
+
+        describe('unpackZip', function() {
+            it('should decompress repo zip', function(done) {
+                this.timeout(1000);
+                createUtil.getZip('skeswa', 'dotfiles', function(err, zipPath) {
+                    if (err) done(err);
+                    else {
+                        createUtil.unpackZip(zipPath, function(err) {
+                            if (err) done(err);
+                            fs.existsSync(zipPath.substring(0, zipPath.length - 4)).should.be.true;
+                            done();
+                        });
                     }
                 });
             });
